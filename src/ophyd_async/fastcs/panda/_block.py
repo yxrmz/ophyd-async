@@ -16,6 +16,13 @@ class CaptureMode(StrictEnum):
     FOREVER = "FOREVER"
 
 
+class TimeUnits(StrictEnum):
+    min = "min"
+    s = "s"
+    ms = "ms"
+    us = "us"
+
+
 class DataBlock(Device):
     # In future we may decide to make hdf_* optional
     hdf_directory: SignalRW[str]
@@ -32,13 +39,20 @@ class DataBlock(Device):
 
 class PulseBlock(Device):
     delay: SignalRW[float]
+    delay_units: SignalRW[TimeUnits]
     width: SignalRW[float]
+    width_units: SignalRW[TimeUnits]
 
 
 class PcompDirection(StrictEnum):
     positive = "Positive"
     negative = "Negative"
     either = "Either"
+
+
+class PcompRelative(StrictEnum):
+    absolute = "Absolute"
+    relative = "Relative"
 
 
 class BitMux(SubsetEnum):
@@ -51,16 +65,10 @@ class PcompBlock(Device):
     dir: SignalRW[PcompDirection]
     enable: SignalRW[BitMux]
     pulses: SignalRW[int]
+    relative: SignalRW[PcompRelative]
     start: SignalRW[int]
     step: SignalRW[int]
     width: SignalRW[int]
-
-
-class TimeUnits(StrictEnum):
-    min = "min"
-    s = "s"
-    ms = "ms"
-    us = "us"
 
 
 class SeqBlock(Device):
@@ -77,9 +85,17 @@ class PcapBlock(Device):
     arm: SignalRW[bool]
 
 
+class ClockBlock(Device):
+    period: SignalRW[float]
+    period_units: SignalRW[TimeUnits]
+    width: SignalRW[float]
+    width_units: SignalRW[TimeUnits]
+
+
 class CommonPandaBlocks(Device):
     pulse: DeviceVector[PulseBlock]
     seq: DeviceVector[SeqBlock]
     pcomp: DeviceVector[PcompBlock]
+    clock: DeviceVector[ClockBlock]
     pcap: PcapBlock
     data: DataBlock
